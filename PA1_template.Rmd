@@ -7,11 +7,22 @@ output:
 
 
 ## Loading and preprocessing the data
-
-
+```{r echo=TRUE}
+download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip", "activity.zip")
+unzip("activity.zip")
+activityData <- read.csv("activity.csv")
+library(lubridate)
+activityData$date <- ymd(activityData$date)
+```
 
 ## What is mean total number of steps taken per day?
-
+```{r echo=TRUE}
+library(ggplot2)
+library(dplyr)
+stepsPerDay <- summarise(group_by(activityData, date), totalSteps = sum(steps))
+hist(stepsPerDay)
+```
+qplot(steps, date, data = activityData)
 
 
 ## What is the average daily activity pattern?
