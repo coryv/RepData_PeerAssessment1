@@ -101,15 +101,17 @@ mmActivity2[,c(1,2,4)]
 The values show a higher frequency, with the same range of steps taken each day. Modifying the data with the method I used fills in days which originally had NA (2017-10-1, 2017-10-8, etc.).
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r echo=TRUE}
+#### 1. Create a new factor variable in the dataset with two levels -- "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 
+```{r echo=TRUE}
 activityData2$day <- wday(activityData2$date, label = TRUE)
 intervalData2 <- activityData2 %>% group_by(interval, day) %>% summarise(meanSteps = mean(steps))
-
-library(ggplot2)
-
-ggplot(intervalData2, aes(interval, meanSteps))+geom_line()+facet_grid(day~.)
-ggplot(intervalData2, aes(interval, meanSteps))+geom_smooth()+facet_grid(day~.)
+intervalData2 <- intervalData2 %>% mutate(wdID = ifelse((day == "Sat" | day == "Sun"), "Weekend", "Weekday"))
 ```
 
-Generally, weekend days show a flatter, more sustained step pattern vs. weekdays. Weekdays show peaks in the morning and evening. Potentially this could be attributed to individuals participating in the study walking more before and after working a job that has them sitting during the day, but more information on the participants would need to be collected to verify. Additionally, peak 
+
+#### 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
+```{r echo=TRUE}
+library(ggplot2)
+ggplot(intervalData2, aes(interval, meanSteps))+geom_line()+facet_grid(wdID~.)
+```
